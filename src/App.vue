@@ -1,30 +1,24 @@
 <template>
   <div id="app">
-    <!-- <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <index></index>
+    <router-link to="/">home</router-link>
+    <router-link to="/mesList">Mes Listes</router-link>
+    <router-link to="/aPropos">A propos</router-link>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import index from './components/index'
 
 export default {
   name: 'app',
   components: {
-    index
-  }
+  },
+  methods: {
+}
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import '../node_modules/bootstrap/dist/css/bootstrap.css';
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 </style>
