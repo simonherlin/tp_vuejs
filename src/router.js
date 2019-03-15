@@ -7,22 +7,22 @@ export default new Router({
   routes: [
     {
       path: "/",
-      component: () => import("./components/Home.vue"),
+      component: () => import("./views/Home.vue"),
     },
     {
-        path: "/mesList",
-        name: "mesList",
-        component: () => import("./components/MesListe.vue")
+        path: "/lists",
+        name: "lists",
+        component: () => import("./views/Lists.vue")
     },
     {
-        path: "/aPropos",
-        name: "aPropose",
-        component: () => import("./components/APropos.vue")
+        path: "/about",
+        name: "about",
+        component: () => import("./views/About.vue")
     },
     {
-        path: "/maList/:id",
-        name: "maList",
-        component: () => import("./components/MaListe.vue")
+        path: "/myList/:id",
+        name: "myList",
+        component: () => import("./views/MyList.vue")
     }
   ]
 });

@@ -6,23 +6,25 @@
                 <button class="btn btn-outline-success" type="button" @click="searchList"><i class="material-icons">search</i></button>
             </div>
         </div>
-        <div>
-        </div>
+        <table class="w-25 table table-striped">
+            <tbody>
+                <tr v-for="item in listOfList" :key=item.id>
+                    <router-link to="/myList/item.id">{{ item.name }}</router-link>
+                </tr>
+            </tbody>
+        </table>
         <div class="input-group mb-3">
             <input v-model="add" type="text" class="w-25" >
             <div class="input-group-append">
                 <button class="btn btn-outline-success" type="button" @click="addList"><i class="material-icons">check</i></button>
             </div>
         </div>
-        <div>
-            {{ listOfList }}
-        </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'MaListe',
+    name: 'Lists',
     data:() => ({
         listOfList: [
             {id: 0, name: 'test1', budget: 50, total: 25, list: [
@@ -36,21 +38,6 @@ export default {
         add: ''
     }),
     computed: {
-        // listOfList: {
-        //     get: function() {
-        //         return this.listOfList
-        //     },
-        //     set: function() {
-        //         this.listOfList.push(
-        //         {
-        //             id: this.listOfList.length,
-        //             text: this.add,
-        //             budegt: 50,
-        //             total: 0,
-        //             list: []
-        //         })
-        //     }
-        // }
     },
     methods: {
         addList: function() {

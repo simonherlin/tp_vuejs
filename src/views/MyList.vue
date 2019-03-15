@@ -43,7 +43,7 @@
 
 <script>
   export default {
-    name: 'MaListe',
+    name: 'MyList',
     data:() => ({
       element: '',
       price: 0,
