@@ -1,5 +1,8 @@
 # malist
 
+## description
+Application to create your shopping list in vuejs framework
+
 ## Project setup
 ```
 npm install

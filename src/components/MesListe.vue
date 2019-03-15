@@ -1,16 +1,82 @@
 <template>
     <div>
         <div class="input-group mb-3">
-            <input v-model="element" type="text" class="w-25" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <input v-model="search" type="text" class="w-25" >
             <div class="input-group-append">
-                <button class="btn btn-outline-success" type="button" @click="addList"><i class="material-icons">search</i></button>
+                <button class="btn btn-outline-success" type="button" @click="searchList"><i class="material-icons">search</i></button>
             </div>
+        </div>
+        <div>
+        </div>
+        <div class="input-group mb-3">
+            <input v-model="add" type="text" class="w-25" >
+            <div class="input-group-append">
+                <button class="btn btn-outline-success" type="button" @click="addList"><i class="material-icons">check</i></button>
+            </div>
+        </div>
+        <div>
+            {{ listOfList }}
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    
+    name: 'MaListe',
+    data:() => ({
+        listOfList: [
+            {id: 0, name: 'test1', budget: 50, total: 25, list: [
+                {id: 0, text: 'Bière', price: 8, checked: true},
+                {id: 1, text: 'Vodka', price: 17, checked: true},
+                {id: 2, text: 'Rhum', price: 0, checked: false}
+            ]},
+            {id: 1, name: 'test2', budget: 50, total: 0, list: []}
+        ],
+        search: '',
+        add: ''
+    }),
+    computed: {
+        // listOfList: {
+        //     get: function() {
+        //         return this.listOfList
+        //     },
+        //     set: function() {
+        //         this.listOfList.push(
+        //         {
+        //             id: this.listOfList.length,
+        //             text: this.add,
+        //             budegt: 50,
+        //             total: 0,
+        //             list: []
+        //         })
+        //     }
+        // }
+    },
+    methods: {
+        addList: function() {
+            if (this.add !== '') {
+                this.listOfList.push(
+                {
+                    id: this.listOfList.length,
+                    text: this.add,
+                    budegt: 50,
+                    total: 0,
+                    list: []
+                })
+                this.add = ''
+                this.saveList()
+            }
+        },
+        saveList: function() {
+            const parsed = JSON.stringify(this.listOfList);
+            localStorage.setItem('listOfList', parsed);
+        },
+        searchList: function() {
+
+        }
+    },
+    mounted () {
+        this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || []
+    }
 }
 </script>
