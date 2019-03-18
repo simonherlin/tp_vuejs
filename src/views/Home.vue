@@ -1,13 +1,10 @@
 <template>
-  <HelloWorld />
+  <div class="home">
+    <router-link to="{name: 'myList', params: {id: 1}}">Regarde ta liste ici</router-link>
+  </div>
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
-
   export default {
-    components: {
-      HelloWorld
-    }
   }
 </script>

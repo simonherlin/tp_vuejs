@@ -1,24 +1,64 @@
 <template>
-    <div>
-        <div class="input-group mb-3">
-            <input v-model="search" type="text" class="w-25" >
-            <div class="input-group-append">
-                <button class="btn btn-outline-success" type="button" @click="searchList"><i class="material-icons">search</i></button>
-            </div>
-        </div>
-        <table class="w-25 table table-striped">
-            <tbody>
-                <tr v-for="item in listOfList" :key=item.id>
-                    <router-link to="/myList/item.id">{{ item.name }}</router-link>
-                </tr>
-            </tbody>
-        </table>
-        <div class="input-group mb-3">
-            <input v-model="add" type="text" class="w-25" >
-            <div class="input-group-append">
-                <button class="btn btn-outline-success" type="button" @click="addList"><i class="material-icons">check</i></button>
-            </div>
-        </div>
+    <div id="lists">
+        <v-toolbar>
+            <v-toolbar-title>Set of Shoplist</v-toolbar-title>
+        </v-toolbar>
+        <v-form>
+            <v-container>
+                <v-layout row>
+                    <v-flex sm4>
+                        <v-text-field
+                        v-model="search"
+                        label="Search"
+                        ></v-text-field>
+                    </v-flex>
+                    <v-flex sm2>
+                        <v-btn icon>
+                            <v-icon>check</v-icon>
+                        </v-btn>
+                    </v-flex>
+                </v-layout>
+                <v-layout row>
+                    <v-flex sm6>
+                        <v-list>
+                            <v-list-tile v-for="(item, index) in listOfList"
+                                :key="index"
+                                @click="goto(item.id)">
+                                    <v-list-tile-content>
+                                        <v-list-tile id="item.id">{{ item.text }} </v-list-tile>
+                                    </v-list-tile-content>
+                            </v-list-tile>
+                        </v-list>
+                    </v-flex>
+                </v-layout>
+                <v-layout row>
+                    <v-flex sm4>
+                        <v-text-field
+                        v-model="add"
+                        label="new list"
+                        ></v-text-field>
+                    </v-flex>
+                    <v-flex sm2>
+                        <v-btn @click="addList" icon>
+                            <v-icon>
+                                add
+                            </v-icon>
+                        </v-btn>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-form>
+        <v-snackbar
+            v-model="snackbar.activate"
+            :bottom="snackbar.y === 'bottom'"
+            :left="snackbar.x === 'left'"
+            :multi-line="snackbar.mode === 'multi-line'"
+            :right="snackbar.x === 'right'"
+            :timeout="snackbar.timeout"
+            :top="snackbar.y == 'top'"
+            :vertical="snackbar.mode === 'vertical'">
+                {{ snackbar.text }}
+        </v-snackbar>
     </div>
 </template>
 
@@ -26,6 +66,8 @@
 export default {
     name: 'Lists',
     data:() => ({
+        search: '',
+        add: '',
         listOfList: [
             {id: 0, name: 'test1', budget: 50, total: 25, list: [
                 {id: 0, text: 'Bière', price: 8, checked: true},
@@ -34,24 +76,41 @@ export default {
             ]},
             {id: 1, name: 'test2', budget: 50, total: 0, list: []}
         ],
-        search: '',
-        add: ''
+        snackbar: {
+            activate: false,
+            y: 'top',
+            x: null,
+            mode: '',
+            timeout: 2000,
+            text: '' 
+        },
+        msgError: 'The list has not been added, the name is empty',
+        msgValid: 'The list has been added'
     }),
     computed: {
     },
     methods: {
+        goto: function(id) {
+            this.$router.push('/myList/' + id)
+        },
         addList: function() {
             if (this.add !== '') {
                 this.listOfList.push(
                 {
                     id: this.listOfList.length,
                     text: this.add,
-                    budegt: 50,
+                    budget: 50,
                     total: 0,
                     list: []
                 })
                 this.add = ''
                 this.saveList()
+                this.snackbar.text = this.msgValid
+                this.snackbar.activate = true
+            }
+            else {
+                this.snackbar.text = this.msgError
+                this.snackbar.activate = true
             }
         },
         saveList: function() {

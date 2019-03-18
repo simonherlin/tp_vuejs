@@ -1,7 +1,27 @@
 <template>
-  <div>
-    <h1>Liste des courses</h1>
-    <div class="w-25 input-group mb-3">
+    <div id="myList">
+        <v-toolbar>
+            <v-toolbar-title>Shoplist : {{ listOfList[0].text }}</v-toolbar-title>
+        </v-toolbar>
+        <v-form>
+            <v-container>
+                <v-layout row>
+                    <v-flex sm2>
+                        <v-subheader>Budget</v-subheader>
+                    </v-flex>
+                    <v-flex sm4>
+                        <v-text-field
+                            label="Buget"
+                            v-model="listOfList[0].budget"
+                            suffix="€"
+                            v-bind:style="bgc"
+                            @change="editBudget">
+                        </v-text-field>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-form>
+    <!-- <div class="w-25 input-group mb-3">
         <div class="input-group-prepend">
         <span class="input-group-text">Budget</span>
         </div>
@@ -9,7 +29,7 @@
         <div class="input-group-append">
         <span class="input-group-text">€</span>
         </div>
-    </div>
+    </div> -->
     <div>
         <div class="input-group mb-3">
             <input v-model="element" type="text" class="w-25" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
@@ -19,7 +39,7 @@
         </div>
     </div>
     <ul class="list-group w-25">
-        <li class="list-group-item" v-for="(item, index) in list" :key=index style="display: flex;">
+        <li class="list-group-item" v-for="(item, index) in listOfList[0].list" :key=index style="display: flex;">
             <div class="mr-5 w-25 d-inline-block">
                 <input type="checkbox" v-model="item.checked" @change="calTotal"/>
                 {{ item.text }}
@@ -36,7 +56,7 @@
         </li>
     </ul>
     <div>
-        Total : {{ total }}
+        Total : {{ listOfList[0].total }}
     </div>
   </div>
 </template>
@@ -47,23 +67,20 @@
     data:() => ({
       element: '',
       price: 0,
-      total: 0,
-      budget: 75,
       horsBudget: false,
       bgc: '',
-      listProduct: [
-          {id: 0, text: 'Bière', price: 8, checked: true},
-          {id: 1, text: 'Vodka', price: 17, checked: true},
-          {id: 2, text: 'Rhum', price: 0, checked: false}
-      ]
+      listOfList: {},
+      id: '',
+      budget: 0,
+      total: 0
     }),
     computed: {
         list: {
             get: function () {
-                return this.listProduct
+                return this.listOfList[0].list
             },
             set: function (value) {
-                this.listProduct.push({id: this.listProduct.length, text: value[0], price: value[1], checked: false})
+                this.listOfList[0].list.push({id: this.listOfList[0].list.length, text: value[0], price: value[1], checked: false})
             }
         }
     },
@@ -81,17 +98,17 @@
             this.saveList()
         },
         calTotal: function() {
-            this.total = 0
-            for (let i =0; i < this.listProduct.length; i++) {
-                if (this.listProduct[i].checked) {
-                    this.total += parseInt(this.listProduct[i].price)
+            this.listOfList[this.id].total = 0
+            for (let i =0; i < this.listOfList[this.id].list.length; i++) {
+                if (this.listOfList[this.id].list[i].checked) {
+                    this.listOfList[this.id].total += parseInt(this.listOfList[this.id].list[i].price)
                 }
             }
             this.editBudget()
             this.saveList()
         },
         editBudget: function(){
-            if (this.budget > this.total){
+            if (this.listOfList[this.id].budget > this.listOfList[this.id].total){
                 this.bgc = 'border-color:green'
             }else{
                 this.bgc = 'border-color:red'
@@ -99,8 +116,8 @@
             this.saveBudget()
         },
         saveList: function() {
-            const parsed = JSON.stringify(this.listProduct);
-            localStorage.setItem('listProduct', parsed);
+            const parsed = JSON.stringify(this.listOfList);
+            localStorage.setItem('listOfList', parsed);
         },
         saveBudget: function () {
             const parsed = JSON.stringify(this.budget);
@@ -108,20 +125,25 @@
         }
     },
     mounted() {
-        if (localStorage.getItem('listProduct')) {
-            try {
-                this.listProduct = JSON.parse(localStorage.getItem('listProduct'));
-            } catch(e) {
-                localStorage.removeItem('listProduct');
-            }
-        }
-        if (localStorage.getItem('budget')) {
-        try {
-            this.budget = JSON.parse(localStorage.getItem('budget'));
-            } catch(e) {
-            localStorage.removeItem('budget');
-            } 
-        }
+        this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || []
+        this.id = this.$route.params.id
+        debugger
+        // this.budget = this.listOfList[this.$route.params.id].budget
+        // this.listProduct = this.listOfList[this.$route.params.id].list
+        // if (localStorage.getItem('listProduct')) {
+        //     try {
+        //         this.listProduct = JSON.parse(localStorage.getItem('listProduct'));
+        //     } catch(e) {
+        //         localStorage.removeItem('listProduct');
+        //     }
+        // }
+        // if (localStorage.getItem('budget')) {
+        // try {
+        //     this.budget = JSON.parse(localStorage.getItem('budget'));
+        //     } catch(e) {
+        //     localStorage.removeItem('budget');
+        //     } 
+        // }
         this.calTotal()
     }
   }
