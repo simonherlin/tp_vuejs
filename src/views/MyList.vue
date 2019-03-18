@@ -18,6 +18,11 @@
                             @change="editBudget">
                         </v-text-field>
                     </v-flex>
+                    <v-flex sm2 v-if="horsBudget">
+                        <v-icon color="red">
+                            warning
+                        </v-icon>
+                    </v-flex>
                 </v-layout>
                 <v-layout row>
                     <v-flex sm4>
@@ -119,9 +124,9 @@
         },
         editBudget: function(){
             if (this.listOfList[this.id].budget > this.listOfList[this.id].total){
-                this.bgc = 'border-color:green'
+                this.horsBudget = false
             }else{
-                this.bgc = 'border-color:red'
+                this.horsBudget = true
             }
             this.saveBudget()
         },
@@ -130,8 +135,8 @@
             localStorage.setItem('listOfList', parsed);
         },
         saveBudget: function () {
-            const parsed = JSON.stringify(this.budget);
-            localStorage.setItem('budget', parsed);
+            const parsed = JSON.stringify(this.listOfList);
+            localStorage.setItem('listOfList', parsed);
         }
     },
     mounted() {
