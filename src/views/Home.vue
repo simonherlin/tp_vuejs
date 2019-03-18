@@ -1,12 +1,13 @@
 <template>
-<!-- liens vers dernier liste crée -->
-    <div>
-        Application pour faire sa liste de course ;)
-    </div>
+  <HelloWorld />
 </template>
 
 <script>
-export default {
-    name: 'Home'
-}
+  import HelloWorld from '../components/HelloWorld'
+
+  export default {
+    components: {
+      HelloWorld
+    }
+  }
 </script>
