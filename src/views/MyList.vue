@@ -1,7 +1,7 @@
 <template>
     <div id="myList">
         <v-toolbar>
-            <v-toolbar-title>Shoplist : {{ listOfList[0].text }}</v-toolbar-title>
+            <v-toolbar-title>Shoplist : {{ listOfList[id].name }}</v-toolbar-title>
         </v-toolbar>
         <v-form>
             <v-container>
@@ -12,52 +12,61 @@
                     <v-flex sm4>
                         <v-text-field
                             label="Buget"
-                            v-model="listOfList[0].budget"
+                            v-model="listOfList[id].budget"
                             suffix="€"
                             v-bind:style="bgc"
                             @change="editBudget">
                         </v-text-field>
                     </v-flex>
                 </v-layout>
+                <v-layout row>
+                    <v-flex sm4>
+                        <v-text-field
+                            label="product name's"
+                            v-model="element">
+                        </v-text-field>
+                    </v-flex>
+                    <v-flex sm2>
+                        <v-btn icon @click="addList">
+                            <v-icon>add</v-icon>
+                        </v-btn>
+                    </v-flex>
+                </v-layout>
+                <v-layout row>
+                    <v-flex sm6>
+                        <v-list>
+                            <v-list-tile v-for="(item, index) in listOfList[id].list"
+                                :key="index">
+                                <v-list-tile-action>
+                                    <v-checkbox v-model="item.checked" @change="calTotal"></v-checkbox>
+                                </v-list-tile-action>
+                                <v-list-tile-content>
+                                    {{ item.text }}
+                                </v-list-tile-content>
+                                <v-list-tile-action v-if="item.checked">
+                                    <v-text-field
+                                        type="number"
+                                        v-model="item.price"
+                                        suffix="€"
+                                        @change="calTotal">
+                                    </v-text-field>
+                                </v-list-tile-action>
+                                <v-list-tile-action>
+                                    <v-btn icon @click="sup(index)">
+                                        <v-icon>
+                                            delete
+                                        </v-icon>
+                                    </v-btn>
+                                </v-list-tile-action>
+                            </v-list-tile>
+                        </v-list>
+                    </v-flex>
+                </v-layout>
             </v-container>
         </v-form>
-    <!-- <div class="w-25 input-group mb-3">
-        <div class="input-group-prepend">
-        <span class="input-group-text">Budget</span>
+        <div>
+            Total : {{ listOfList[id].total }} €
         </div>
-        <input v-bind:style="bgc" type="number" class="form-control" v-model="budget" @change="editBudget">
-        <div class="input-group-append">
-        <span class="input-group-text">€</span>
-        </div>
-    </div> -->
-    <div>
-        <div class="input-group mb-3">
-            <input v-model="element" type="text" class="w-25" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-outline-success" type="button" @click="addList">Ajouter</button>
-            </div>
-        </div>
-    </div>
-    <ul class="list-group w-25">
-        <li class="list-group-item" v-for="(item, index) in listOfList[0].list" :key=index style="display: flex;">
-            <div class="mr-5 w-25 d-inline-block">
-                <input type="checkbox" v-model="item.checked" @change="calTotal"/>
-                {{ item.text }}
-            </div>
-            <div class="input-group w-50 " v-if="item.checked">
-            <input type="number" class="form-control" v-model="item.price" @change="calTotal">
-            <div class="input-group-append">
-                <span class="input-group-text">€</span>
-            </div>
-            </div>
-        <div class="mr-5 w-25 d-inline-block">
-            <button type="button" @click="sup(item.id)" class="btn btn-danger">Supprimer</button>
-        </div>
-        </li>
-    </ul>
-    <div>
-        Total : {{ listOfList[0].total }}
-    </div>
   </div>
 </template>
 
@@ -77,22 +86,23 @@
     computed: {
         list: {
             get: function () {
-                return this.listOfList[0].list
+                return this.listOfList[this.id].list
             },
             set: function (value) {
-                this.listOfList[0].list.push({id: this.listOfList[0].list.length, text: value[0], price: value[1], checked: false})
+                this.listOfList[this.id].list.push(
+                    {
+                        id: this.listOfList[this.id].list.length,
+                        text: value[this.id], price: value[1], checked: false
+                    })
             }
         }
     },
     methods: {
-        sup: function(id) {
-            let index = this.items.map(function(e) { return e.id; }).indexOf(id);
-            if (index > -1) {
-                this.items.splice(index, 1);
-                this.$parent.calTotal()
-            }
+        sup: function(index) {
+            this.listOfList[this.id].list.splice(index, 1)
+            this.calTotal()
         },
-                addList: function () {
+        addList: function () {
             this.list.push({id:this.list.length, text: this.element, price: 0, checked: false})
             this.element = ''
             this.saveList()
@@ -127,23 +137,6 @@
     mounted() {
         this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || []
         this.id = this.$route.params.id
-        debugger
-        // this.budget = this.listOfList[this.$route.params.id].budget
-        // this.listProduct = this.listOfList[this.$route.params.id].list
-        // if (localStorage.getItem('listProduct')) {
-        //     try {
-        //         this.listProduct = JSON.parse(localStorage.getItem('listProduct'));
-        //     } catch(e) {
-        //         localStorage.removeItem('listProduct');
-        //     }
-        // }
-        // if (localStorage.getItem('budget')) {
-        // try {
-        //     this.budget = JSON.parse(localStorage.getItem('budget'));
-        //     } catch(e) {
-        //     localStorage.removeItem('budget');
-        //     } 
-        // }
         this.calTotal()
     }
   }

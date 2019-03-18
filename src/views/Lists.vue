@@ -25,7 +25,7 @@
                                 :key="index"
                                 @click="goto(item.id)">
                                     <v-list-tile-content>
-                                        <v-list-tile id="item.id">{{ item.text }} </v-list-tile>
+                                        <v-list-tile id="item.id">{{ item.name }} </v-list-tile>
                                     </v-list-tile-content>
                             </v-list-tile>
                         </v-list>
@@ -98,7 +98,7 @@ export default {
                 this.listOfList.push(
                 {
                     id: this.listOfList.length,
-                    text: this.add,
+                    name: this.add,
                     budget: 50,
                     total: 0,
                     list: []
