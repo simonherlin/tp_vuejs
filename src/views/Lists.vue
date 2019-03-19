@@ -63,19 +63,14 @@
 </template>
 
 <script>
+import {basicList} from '@/basicList'
+
 export default {
     name: 'Lists',
     data:() => ({
         search: '',
         add: '',
-        listOfList: [
-            {id: 0, name: 'test1', budget: 50, total: 25, list: [
-                {id: 0, text: 'Bière', price: 8, checked: true},
-                {id: 1, text: 'Vodka', price: 17, checked: true},
-                {id: 2, text: 'Rhum', price: 0, checked: false}
-            ]},
-            {id: 1, name: 'test2', budget: 50, total: 0, list: []}
-        ],
+        listOfList: [],
         snackbar: {
             activate: false,
             y: 'top',
@@ -122,7 +117,7 @@ export default {
         }
     },
     mounted () {
-        this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || []
+        this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || basicList
     }
 }
 </script>

@@ -76,17 +76,15 @@
 </template>
 
 <script>
+import {basicList} from '@/basicList'
+
   export default {
     name: 'MyList',
     data:() => ({
       element: '',
-      price: 0,
       horsBudget: false,
-      bgc: '',
       listOfList: {},
-      id: '',
-      budget: 0,
-      total: 0
+      id: ''
     }),
     computed: {
         list: {
@@ -140,7 +138,7 @@
         }
     },
     mounted() {
-        this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || []
+        this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || basicList
         this.id = this.$route.params.id
         this.calTotal()
     }
