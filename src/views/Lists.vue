@@ -10,6 +10,7 @@
                         <v-text-field
                         v-model="search"
                         label="Search"
+                        @change="searchList"
                         ></v-text-field>
                     </v-flex>
                     <v-flex sm2>
@@ -21,7 +22,7 @@
                 <v-layout row>
                     <v-flex sm6>
                         <v-list>
-                            <v-list-tile v-for="(item, index) in listOfList"
+                            <v-list-tile v-for="(item, index) in displayList"
                                 :key="index"
                                 @click="goto(item.id)">
                                     <v-list-tile-content>
@@ -71,6 +72,7 @@ export default {
         search: '',
         add: '',
         listOfList: [],
+        displayList: [],
         snackbar: {
             activate: false,
             y: 'top',
@@ -113,11 +115,18 @@ export default {
             localStorage.setItem('listOfList', parsed);
         },
         searchList: function() {
+            this.displayList = []
 
+            for (let i = 0; i < this.listOfList.length; i++) {
+                if (this.listOfList[i].name.includes(this.search)) {
+                    this.displayList.push(this.listOfList[i])
+                }
+            }
         }
     },
     mounted () {
         this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || basicList
+        this.displayList = this.listOfList
     }
 }
 </script>

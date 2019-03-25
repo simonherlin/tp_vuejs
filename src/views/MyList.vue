@@ -1,7 +1,7 @@
 <template>
     <div id="myList">
         <v-toolbar>
-            <v-toolbar-title>Shoplist : {{ listOfList[id].name }}</v-toolbar-title>
+            <v-toolbar-title>Shoplist : {{ name }}</v-toolbar-title>
         </v-toolbar>
         <v-form>
             <v-container>
@@ -12,9 +12,8 @@
                     <v-flex sm4>
                         <v-text-field
                             label="Buget"
-                            v-model="listOfList[id].budget"
+                            v-model="budget"
                             suffix="€"
-                            v-bind:style="bgc"
                             @change="editBudget">
                         </v-text-field>
                     </v-flex>
@@ -40,7 +39,7 @@
                 <v-layout row>
                     <v-flex sm6>
                         <v-list>
-                            <v-list-tile v-for="(item, index) in listOfList[id].list"
+                            <v-list-tile v-for="(item, index) in list"
                                 :key="index">
                                 <v-list-tile-action>
                                     <v-checkbox v-model="item.checked" @change="calTotal"></v-checkbox>
@@ -82,9 +81,11 @@ import {basicList} from '@/basicList'
     name: 'MyList',
     data:() => ({
       element: '',
+      budget: 0,
       horsBudget: false,
-      listOfList: {},
-      id: ''
+      listOfList: [],
+      id: '',
+      name: ''
     }),
     computed: {
         list: {
@@ -121,6 +122,7 @@ import {basicList} from '@/basicList'
             this.saveList()
         },
         editBudget: function(){
+            this.listOfList[this.id].budget = this.budget
             if (this.listOfList[this.id].budget > this.listOfList[this.id].total){
                 this.horsBudget = false
             }else{
@@ -140,7 +142,12 @@ import {basicList} from '@/basicList'
     mounted() {
         this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || basicList
         this.id = this.$route.params.id
+        this.budget = this.listOfList[this.id].budget
+        this.name = this.listOfList[this.id].name
         this.calTotal()
+    },
+    beforeCreate() {
+        
     }
   }
 </script>
