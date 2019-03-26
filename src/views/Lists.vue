@@ -106,14 +106,14 @@ export default {
                 this.add = ''
                 this.snackbar.text = this.msgValid
                 this.snackbar.activate = true
+                this.updateIdLast(this.list.length)
+                this.displayList = this.list
+                this.searchList()
             }
             else {
                 this.snackbar.text = this.msgError
                 this.snackbar.activate = true
             }
-            this.updateIdLast(this.list.length)
-            this.displayList = this.list
-            this.searchList()
         },
         goto: function(id) {
             this.$router.push('/myList/' + id)
