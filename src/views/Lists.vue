@@ -40,7 +40,7 @@
                         ></v-text-field>
                     </v-flex>
                     <v-flex sm2>
-                        <v-btn @click="addList" icon>
+                        <v-btn @click="addL" icon>
                             <v-icon>
                                 add
                             </v-icon>
@@ -64,14 +64,13 @@
 </template>
 
 <script>
-import {basicList} from '@/basicList'
+import Vuex from 'vuex'
 
 export default {
     name: 'Lists',
     data:() => ({
         search: '',
         add: '',
-        listOfList: [],
         displayList: [],
         snackbar: {
             activate: false,
@@ -84,24 +83,22 @@ export default {
         msgError: 'The list has not been added, the name is empty',
         msgValid: 'The list has been added'
     }),
-    computed: {
-    },
     methods: {
-        goto: function(id) {
-            this.$router.push('/myList/' + id)
-        },
-        addList: function() {
+        ...Vuex.mapActions({
+            addList: 'addList',
+            updateIdLast: 'updateIdLast'
+        }),
+        addL: function() {
             if (this.add !== '') {
-                this.listOfList.push(
-                {
-                    id: this.listOfList.length,
+                let newList = {
+                    id: this.$store.state.listOfList.length,
                     name: this.add,
                     budget: 50,
                     total: 0,
                     list: []
-                })
+                }
+                this.addList(newList)
                 this.add = ''
-                this.saveList()
                 this.snackbar.text = this.msgValid
                 this.snackbar.activate = true
             }
@@ -109,24 +106,26 @@ export default {
                 this.snackbar.text = this.msgError
                 this.snackbar.activate = true
             }
+            this.updateIdLast(this.$store.state.listOfList.length)
         },
-        saveList: function() {
-            const parsed = JSON.stringify(this.listOfList);
-            localStorage.setItem('listOfList', parsed);
+        goto: function(id) {
+            this.$router.push('/myList/' + id)
         },
         searchList: function() {
             this.displayList = []
-
-            for (let i = 0; i < this.listOfList.length; i++) {
-                if (this.listOfList[i].name.includes(this.search)) {
-                    this.displayList.push(this.listOfList[i])
+            let list = this.$store.state.listOfList
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].name.includes(this.search)) {
+                    this.displayList.push(list[i])
                 }
             }
         }
     },
     mounted () {
-        this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || basicList
-        this.displayList = this.listOfList
-    }
+        this.displayList = this.$store.state.listOfList
+    },
+    beforeCreate () {
+		this.$store.commit('initialiseStore')
+	}
 }
 </script>

@@ -67,15 +67,15 @@
                     </v-flex>
                 </v-layout>
             </v-container>
+            <div>
+                Total : {{ total }} €
+            </div>
         </v-form>
-        <div>
-            Total : {{ listOfList[id].total }} €
-        </div>
   </div>
 </template>
 
 <script>
-import {basicList} from '@/basicList'
+import Vuex from 'vuex'
 
   export default {
     name: 'MyList',
@@ -85,69 +85,62 @@ import {basicList} from '@/basicList'
       horsBudget: false,
       listOfList: [],
       id: '',
-      name: ''
+      name: '',
+      total: 0,
+      list: []
     }),
-    computed: {
-        list: {
-            get: function () {
-                return this.listOfList[this.id].list
-            },
-            set: function (value) {
-                this.listOfList[this.id].list.push(
-                    {
-                        id: this.listOfList[this.id].list.length,
-                        text: value[this.id], price: value[1], checked: false
-                    })
-            }
-        }
-    },
     methods: {
+        ...Vuex.mapActions({
+            update: 'updateList',
+            updateIdLast: 'updateIdLast'
+        }),
         sup: function(index) {
-            this.listOfList[this.id].list.splice(index, 1)
+            this.list.splice(index, 1)
             this.calTotal()
         },
         addList: function () {
             this.list.push({id:this.list.length, text: this.element, price: 0, checked: false})
             this.element = ''
-            this.saveList()
+            this.save()
         },
         calTotal: function() {
-            this.listOfList[this.id].total = 0
-            for (let i =0; i < this.listOfList[this.id].list.length; i++) {
-                if (this.listOfList[this.id].list[i].checked) {
-                    this.listOfList[this.id].total += parseInt(this.listOfList[this.id].list[i].price)
+            this.total = 0
+            for (let i =0; i < this.list.length; i++) {
+                if (this.list[i].checked) {
+                    this.total += parseInt(this.list[i].price)
                 }
             }
             this.editBudget()
-            this.saveList()
         },
         editBudget: function(){
-            this.listOfList[this.id].budget = this.budget
-            if (this.listOfList[this.id].budget > this.listOfList[this.id].total){
+            if (this.budget > this.total){
                 this.horsBudget = false
             }else{
                 this.horsBudget = true
             }
-            this.saveBudget()
+            this.save()
         },
-        saveList: function() {
-            const parsed = JSON.stringify(this.listOfList);
-            localStorage.setItem('listOfList', parsed);
-        },
-        saveBudget: function () {
-            const parsed = JSON.stringify(this.listOfList);
-            localStorage.setItem('listOfList', parsed);
+        save: function (){
+            let list = {
+                id: parseInt(this.id),
+                name: this.name,
+                budget: parseInt(this.budget),
+                total: this.total,
+                list: this.list
+            }
+            this.update(list)
+            this.updateIdLast(this.id)
         }
     },
     mounted() {
-        this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || basicList
         this.id = this.$route.params.id
-        this.budget = this.listOfList[this.id].budget
-        this.name = this.listOfList[this.id].name
+        this.list = this.$store.state.listOfList[this.id].list
+        this.budget = this.$store.state.listOfList[this.id].budget
+        this.name = this.$store.state.listOfList[this.id].name
         this.calTotal()
     },
-    beforeCreate() {
-        
-    }
+    beforeCreate () {
+		this.$store.commit('initialiseStore')
+	}
   }
 </script>

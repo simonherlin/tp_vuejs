@@ -4,7 +4,7 @@
       Home
     </v-toolbar>
     <v-form>
-        <v-container v-if="listOfList.length > 0">
+        <v-container v-if="length > 0">
           <router-link :to="`/myList/${id}`">Regarde ta liste ici</router-link>
         </v-container>
     </v-form>
@@ -12,17 +12,28 @@
 </template>
 
 <script>
-import {basicList} from '@/basicList'
-
+import { mapGetters } from 'vuex'
   export default {
     name: 'Home',
     data: () => ({
-      listOfList: [],
       id: 0
     }),
+    computed: {
+      ...mapGetters({
+        getId: 'getLastId',
+        length: 'getLength'
+      })
+    },
     mounted() {
-      this.listOfList = JSON.parse(window.localStorage.getItem('listOfList')) || basicList
-      this.id = this.listOfList[this.listOfList.length - 1].id
-    }
+      if (this.getId < 0) {
+        this.id = this.length - 1
+      }
+      else {
+        this.id = this.getId
+      }
+    },
+    beforeCreate () {
+		  this.$store.commit('initialiseStore')
+	  }
   }
 </script>
