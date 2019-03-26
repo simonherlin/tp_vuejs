@@ -83,6 +83,11 @@ export default {
         msgError: 'The list has not been added, the name is empty',
         msgValid: 'The list has been added'
     }),
+    computed: {
+        ...Vuex.mapGetters({
+            list: 'allList'
+        })
+    },
     methods: {
         ...Vuex.mapActions({
             addList: 'addList',
@@ -106,9 +111,9 @@ export default {
                 this.snackbar.text = this.msgError
                 this.snackbar.activate = true
             }
-            this.updateIdLast(this.$store.state.listOfList.length)
-            this.displayList = this.$store.state.listOfList
-            this.search = ''
+            this.updateIdLast(this.list.length)
+            this.displayList = this.list
+            this.searchList()
         },
         goto: function(id) {
             this.$router.push('/myList/' + id)
@@ -124,7 +129,7 @@ export default {
         }
     },
     mounted () {
-        this.displayList = this.$store.state.listOfList
+        this.displayList = this.list
     },
     beforeCreate () {
 		this.$store.commit('initialiseStore')
