@@ -107,6 +107,8 @@ export default {
                 this.snackbar.activate = true
             }
             this.updateIdLast(this.$store.state.listOfList.length)
+            this.displayList = this.$store.state.listOfList
+            this.search = ''
         },
         goto: function(id) {
             this.$router.push('/myList/' + id)
